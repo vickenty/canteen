@@ -1,0 +1,31 @@
+% layout "back", title => "Recent votes";
+
+<div class="row">
+    <div class="span12">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    % foreach (0..5) {
+                        <th>Item <%= $_ + 1 %></th>
+                    % }
+                </tr>
+            </thead>
+            <tbody>
+                % foreach my $day (@$votes) {
+                    <tr>
+                        <td><%= $day->{key} %></td>
+                        % foreach my $item (@{$day->{value}}) {
+                            <td>
+                                % my $v = $item->{value};
+                                <%= $v->{0}->[0] || 0 %> /
+                                <%= $v->{1}->[0] || 0 %> /
+                                <%= $v->{2}->[0] || 0 %>
+                            </td>
+                        % }
+                    </tr>
+                %}
+            </tbody>
+        </table>
+    </div>
+</div>

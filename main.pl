@@ -35,6 +35,65 @@ sub save_votes {
     foreach (0..5) {
         $st->execute($date, $_, $votes[$_], "");
     }
+}
+
+sub push_any {
+    my ($ref, $key, $val) = @_;
+    if (ref $ref eq "ARRAY") {
+        push @$ref, { key => $key, value => $val };
+    } elsif (ref $ref eq "HASH") {
+        $ref->{$key} = $val;
+    } else {
+        die "unknown ref type $ref";
+    }
+}
+
+sub collect {
+    my ($st, @types) = @_;
+    my (%acc, $acc);
+
+    my $root = shift @types;
+    if ($root eq "array") {
+        $acc{-1} = [];
+    } else {
+        $acc{-1} = {};
+    }
+
+    my $order = scalar(@types);
+    my @mark = (undef) x $order;
+
+    while (my @row = $st->fetchrow_array) {
+        foreach (0..$#types) {
+            unless (defined($mark[$_]) && $mark[$_] eq $row[$_]) {
+                $mark[$_] = $row[$_];
+                $mark[$_ + 1] = undef;
+
+                if ($types[$_] eq "array") {
+                    $acc = [];
+                } else {
+                    $acc = {};
+                }
+                $acc{$_} = $acc;
+                push_any($acc{$_ - 1}, $row[$_], $acc);
+            }
+        }
+        push_any $acc, $row[$order], [ @row[($order + 1) .. $#row] ];
+    }
+
+    return $acc{-1};
+}
+
+sub get_recent_votes {
+    my $db = get_db;
+    my $st = $db->prepare("select date, position, vote, count(*) from votes where date >= date('now', '-1 month') group by date, position, vote");
+    $st->execute;
+    return collect($st, "array", "array", "hash");
+}
+
+get '/view' => sub {
+    my $self = shift;
+    $self->stash(votes => get_recent_votes());
+    return $self->render('view');
 };
 
 get '/:date' => sub {
