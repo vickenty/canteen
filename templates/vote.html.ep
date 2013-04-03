@@ -14,98 +14,20 @@
 <div class="container">
 	<form id="canteen_voting" name="canteen_voting" method="post">
 		<ul>
-			<li>
-				<span>Salad 1</span>
-				<label for="salad1_vote">
-					<input type="radio" name="salad1_vote" value="good">
-					Good
-				</label>
-				<label for="salad1_vote">
-					<input type="radio" name="salad1_vote" value="neutral">
-					Neutral
-				</label>
-				<label for="salad1_vote">
-					<input type="radio" name="salad1_vote" value="bad">
-					Bad
-				</label>
-			</li>
-			<li>
-				<span>Salad 2</span>
-				<label for="salad2_vote">
-					<input type="radio" name="salad2_vote" value="good">
-					Good
-				</label>
-				<label for="salad2_vote">
-					<input type="radio" name="salad2_vote" value="neutral">
-					Neutral
-				</label>
-				<label for="salad2_vote">
-					<input type="radio" name="salad2_vote" value="bad">
-					Bad
-				</label>
-			</li>
-			<li>
-				<span>Soup 1</span>
-				<label for="soup1_vote">
-					<input type="radio" name="soup1_vote" value="good">
-					Good
-				</label>
-				<label for="soup1_vote">
-					<input type="radio" name="soup1_vote" value="neutral">
-					Neutral
-				</label>
-				<label for="soup1_vote">
-					<input type="radio" name="soup1_vote" value="bad">
-					Bad
-				</label>
-			</li>
-			<li>
-				<span>Soup 2</span>
-				<label for="soup2_vote">
-					<input type="radio" name="soup2_vote" value="good">
-					Good
-				</label>
-				<label for="soup2_vote">
-					<input type="radio" name="soup2_vote" value="neutral">
-					Neutral
-				</label>
-				<label for="soup2_vote">
-					<input type="radio" name="soup2_vote" value="bad">
-					Bad
-				</label>
-			</li>
-			<li>
-				<span>Hot Snack 1</span>
-				<label for="hotsnack1_vote">
-					<input type="radio" name="hotsnack1_vote" value="good">
-					Good
-				</label>
-				<label for="hotsnack1_vote">
-					<input type="radio" name="hotsnack1_vote" value="neutral">
-					Neutral
-				</label>
-				<label for="hotsnack1_vote">
-					<input type="radio" name="hotsnack1_vote" value="bad">
-					Bad
-				</label>
-			</li>
-			<li>
-				<span>Hot Snack 2</span>
-				<label for="hotsnack2_vote">
-					<input type="radio" name="hotsnack2_vote" value="good">
-					Good
-				</label>
-				<label for="hotsnack2_vote">
-					<input type="radio" name="hotsnack2_vote" value="neutral">
-					Neutral
-				</label>
-				<label for="hotsnack2_vote">
-					<input type="radio" name="hotsnack2_vote" value="bad">
-					Bad
-				</label>
-			</li>
+            % my @votes = ( "Good", "Neutral", "Bad" );
+            % foreach my $i (0 .. $#{$menu}) {
+                % my $name = $menu->[$i];
+                <li>
+                    <span><%= $name %></span>
+                    % foreach my $j (0 .. $#votes) {
+                        <label>
+                            <input type="radio" name="vote_<%= $i %>" value="<%= $j %>">
+                            <%= $votes[$j] %>
+                        </label>
+                    % }
+                </li>
+            % }
 		</ul>
-		
 		<input type="submit" value="Vote" id="submit_button">
 	</form>	
 </div>

@@ -1,0 +1,13 @@
+<!DOCTYPE>
+
+<html>
+<body>
+    <h1>Menu editor</h1>
+    <form method="POST">
+    % foreach (0..5) {
+        <div>
+            <input name="name_<%= $_ %>" value="<%= $menu->[$_] %>">
+        </div>
+    % }
+    <input type="submit">
+</body>
