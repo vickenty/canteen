@@ -1,6 +1,8 @@
 use DBI;
 use Mojolicious::Lite;
 
+plugin 'DefaultHelpers';
+
 sub get_db {
     DBI->connect("dbi:SQLite:main.db") or die(DBI->errstr);
 }

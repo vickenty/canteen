@@ -1,13 +1,11 @@
-<!DOCTYPE>
+% layout "back", title => "Edit menu for $date";
 
-<html>
-<body>
-    <h1>Menu editor</h1>
-    <form method="POST">
-    % foreach (0..5) {
-        <div>
-            <input name="name_<%= $_ %>" value="<%= $menu->[$_] %>">
-        </div>
-    % }
-    <input type="submit">
-</body>
+<form class="form-horizontal" method="POST">
+% foreach (0..5) {
+    <div class="control-group">
+        <input name="name_<%= $_ %>" value="<%= $menu->[$_] %>">
+    </div>
+% }
+<div class="control-group">
+    <input type="submit" class="btn btn-primary" value="Save">
+</div>
