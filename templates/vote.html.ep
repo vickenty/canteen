@@ -1,1 +1,112 @@
-Hello world.
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Rate our Canteen menu items</title>
+
+<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+
+</head>
+
+<body>
+<div class="container">
+	<form id="canteen_voting" name="canteen_voting" method="post">
+		<ul>
+			<li>
+				<span>Salad 1</span>
+				<label for="salad1_vote">
+					<input type="radio" name="salad1_vote" value="good">
+					Good
+				</label>
+				<label for="salad1_vote">
+					<input type="radio" name="salad1_vote" value="neutral">
+					Neutral
+				</label>
+				<label for="salad1_vote">
+					<input type="radio" name="salad1_vote" value="bad">
+					Bad
+				</label>
+			</li>
+			<li>
+				<span>Salad 2</span>
+				<label for="salad2_vote">
+					<input type="radio" name="salad2_vote" value="good">
+					Good
+				</label>
+				<label for="salad2_vote">
+					<input type="radio" name="salad2_vote" value="neutral">
+					Neutral
+				</label>
+				<label for="salad2_vote">
+					<input type="radio" name="salad2_vote" value="bad">
+					Bad
+				</label>
+			</li>
+			<li>
+				<span>Soup 1</span>
+				<label for="soup1_vote">
+					<input type="radio" name="soup1_vote" value="good">
+					Good
+				</label>
+				<label for="soup1_vote">
+					<input type="radio" name="soup1_vote" value="neutral">
+					Neutral
+				</label>
+				<label for="soup1_vote">
+					<input type="radio" name="soup1_vote" value="bad">
+					Bad
+				</label>
+			</li>
+			<li>
+				<span>Soup 2</span>
+				<label for="soup2_vote">
+					<input type="radio" name="soup2_vote" value="good">
+					Good
+				</label>
+				<label for="soup2_vote">
+					<input type="radio" name="soup2_vote" value="neutral">
+					Neutral
+				</label>
+				<label for="soup2_vote">
+					<input type="radio" name="soup2_vote" value="bad">
+					Bad
+				</label>
+			</li>
+			<li>
+				<span>Hot Snack 1</span>
+				<label for="hotsnack1_vote">
+					<input type="radio" name="hotsnack1_vote" value="good">
+					Good
+				</label>
+				<label for="hotsnack1_vote">
+					<input type="radio" name="hotsnack1_vote" value="neutral">
+					Neutral
+				</label>
+				<label for="hotsnack1_vote">
+					<input type="radio" name="hotsnack1_vote" value="bad">
+					Bad
+				</label>
+			</li>
+			<li>
+				<span>Hot Snack 2</span>
+				<label for="hotsnack2_vote">
+					<input type="radio" name="hotsnack2_vote" value="good">
+					Good
+				</label>
+				<label for="hotsnack2_vote">
+					<input type="radio" name="hotsnack2_vote" value="neutral">
+					Neutral
+				</label>
+				<label for="hotsnack2_vote">
+					<input type="radio" name="hotsnack2_vote" value="bad">
+					Bad
+				</label>
+			</li>
+		</ul>
+		
+		<input type="submit" value="Vote" id="submit_button">
+	</form>	
+</div>
+</body>
