@@ -6,7 +6,7 @@
             <thead>
                 <tr>
                     <th>Date</th>
-                    % foreach (0..5) {
+                    % foreach (0..$max_items) {
                         <th>Item <%= $_ + 1 %></th>
                     % }
                 </tr>
@@ -22,6 +22,9 @@
                                 <%= $v->{1}->[0] || 0 %> /
                                 <%= $v->{2}->[0] || 0 %>
                             </td>
+                        % }
+                        % foreach ($#{$day->{value}} .. ($max_items - 1)) {
+                            <td>N/A</td>
                         % }
                     </tr>
                 %}
