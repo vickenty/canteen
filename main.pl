@@ -1,5 +1,6 @@
 use DBI;
 use Mojolicious::Lite;
+use Session::Token;
 
 plugin 'DefaultHelpers';
 
@@ -139,4 +140,5 @@ post '/edit/:date' => sub {
     return $self->redirect_to("/edit/$date");
 };
 
+app->secret($ENV{"SESSION_SECRET"} || Session::Token->new->get);
 app->start;
