@@ -103,14 +103,14 @@ get '/view' => sub {
     return $self->render('view');
 };
 
-get '/:date' => sub {
+get '/vote/:date' => sub {
     my $self = shift;
     my $date = $self->param("date");
     $self->stash(menu => get_menu($date));
     return $self->render('vote');
 };
 
-post '/:date' => sub {
+post '/vote/:date' => sub {
     my $self = shift;
     my $date = $self->param("date");
 
