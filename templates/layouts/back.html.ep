@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+% my $nav_link = begin
+    % my ($name, $href) = @_;
+    % my $active = "active" if (url_match $href);
+    %= tag 'li', ($active ? (class => join(" ", $active)) : ()) => begin
+        %= link_to $name => $href
+    %= end
+% end
+
 <html>
     <head>
         <title><%= title %></title>
@@ -6,9 +14,34 @@
     </head>
     <body>
         <div class="container">
+            % if (current_user) {
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <ul class="nav">
+                            %= $nav_link->("Votes", "/view");
+                            %= $nav_link->("Menus", "/edit");
+                        </ul>
+                        <ul class="nav pull-right">
+                            %= $nav_link->("Profile", "/profile");
+                            %= $nav_link->("Sign out", "/signout")
+                        </ul>
+                    </div>
+                </div>
+            % }
             <div class="page-header">
                 <h1><%= title %></h1>
             </div>
+
+            % my $msg = flash 'message';
+            % if ($msg) {
+                % my $type = flash('type');
+                % $type = "alert-$type" if ($type);
+                %= tag 'div', class => join(' ', 'alert', $type), => begin
+                    <button class="close" data-dismiss="alert">&times;</button>
+                    %= $msg
+                %= end
+            % }
+
             <%= content %>
         </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

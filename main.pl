@@ -1,8 +1,14 @@
 use DBI;
 use Mojolicious::Lite;
 use Session::Token;
+use Digest::SHA qw/sha1_hex/;
 
 plugin 'DefaultHelpers';
+
+do {
+    my $generator = Session::Token->new;
+    sub token_generator { $generator }
+};
 
 sub get_db {
     DBI->connect("dbi:SQLite:main.db") or die(DBI->errstr);
@@ -94,14 +100,80 @@ sub get_recent_votes {
     return ($votes, $max);
 }
 
-get '/view' => sub {
+sub new_hash_password {
+    return hash_password(token_generator->get, shift);
+}
+
+sub hash_password {
+    my ($salt, $password) = @_;
+    return join(".", $salt, sha1_hex("$salt.$password"));
+}
+
+sub create_user {
+    my ($email, $password) = @_;
+    my $hash = new_hash_password($password);
+    my $db = get_db;
+    $db->do("insert into users (email, password, created_at) values (?, ?, datetime('now'))", {}, $email, $hash);
+    return $db->last_insert_id;
+}
+
+sub get_user {
+    my ($uid) = @_;
+    return get_db->selectrow_hashref("select rowid, email from users where rowid = ? and active > 0", {}, $uid);
+}
+
+sub get_user_by_email {
+    my ($email) = @_;
+    my $db = get_db;
+    return get_db->selectrow_hashref("select rowid, email, password from users where active > 0 and email = ?", {}, $email);
+}
+
+sub record_login {
+    my ($uid, $ip) = @_;
+    my $db = get_db;
+    $db->do("update users set last_login_at = datetime('now'), last_login_ip = ? where rowid = ?", {}, $ip, $uid);
+}
+
+sub change_password {
+    my ($uid, $password) = @_;
+    my $hash = new_hash_password($password);
+    get_db->do("update users set password = ? where rowid = ?", {}, $hash, $uid);
+}
+
+sub validate_password {
+    my ($salted, $password) = @_;
+    return 1 unless ($salted);
+
+    my ($salt, $hash) = split /\./, $salted;
+    return $salted eq hash_password($salt, $password);
+}
+
+helper login => sub {
+    my ($self, $email, $password) = @_;
+    my $user = get_user_by_email($email);
+    if ($user && validate_password($user->{password}, $password)) {
+        record_login($user->{rowid}, $self->tx->remote_address);
+        $self->session->{user_id} = $user->{rowid};
+        return $user;
+    }
+};
+
+helper authenticate => sub {
     my $self = shift;
-    my ($votes, $max_items) = get_recent_votes();
-    $self->stash(
-        votes => $votes,
-        max_items => $max_items
-    );
-    return $self->render('view');
+    my $user = get_user($self->session->{user_id});
+    $self->stash(user => $user);
+    return $user;
+};
+
+helper url_match => sub {
+    my ($self, $match) = @_;
+    $self->req->url->to_rel =~ /^$match/;
+};
+
+helper current_user => sub {
+    my ($self, $attr) = @_;
+    my $user = $self->stash('user');
+    return ($user && $attr) ? $user->{$attr} : $user;
 };
 
 get '/vote/:date' => sub {
@@ -121,6 +193,49 @@ post '/vote/:date' => sub {
     return $self->redirect_to("/$date");
 };
 
+get '/signin' => sub { shift->render('signin'); };
+
+post '/signin' => sub {
+    my $self = shift;
+    my $user = $self->login($self->param("email"), $self->param('password'));
+
+    unless ($user) {
+        $self->flash(type => 'error', message => "Invalid e-email address or password.");
+        return $self->redirect_to('/signin');
+    }
+
+    return $self->redirect_to('view');
+};
+
+any '/signout' => sub {
+    my $self = shift;
+    delete $self->session->{user_id};
+
+    $self->flash(type => 'success', message => "Signed out.");
+    $self->redirect_to('/signin');
+};
+
+under sub {
+    my $self = shift;
+    unless ($self->authenticate) {
+        $self->render("signin", status => 403);
+        return 0;
+    }
+
+    return 1;
+};
+
+get '/view' => sub {
+    my $self = shift;
+    my ($votes, $max_items) = get_recent_votes();
+    $self->stash(
+        votes => $votes,
+        max_items => $max_items
+    );
+    return $self->render('view');
+};
+
+
 get '/edit/:date' => sub {
     my $self = shift;
     my $date = $self->param('date');
@@ -138,6 +253,24 @@ post '/edit/:date' => sub {
     save_menu($date, @items);
 
     return $self->redirect_to("/edit/$date");
+};
+
+get '/profile' => sub { shift->render('profile'); };
+
+post '/profile' => sub {
+    my $self = shift;
+
+    my $password = $self->param("password");
+
+    if (!$password) {
+        $self->flash(type => "error", message => "Password can't be empty.");
+    } elsif ($password eq $self->param("confirm")) {
+        change_password($self->current_user->{rowid}, $password);
+        $self->flash(type => 'success', message => 'Password was changed.');
+    } else {
+        $self->flash(type => 'error', message => "Passwords do not match.");
+    }
+    return $self->redirect_to('/profile');
 };
 
 app->secret($ENV{"SESSION_SECRET"} || Session::Token->new->get);

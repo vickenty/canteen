@@ -6,7 +6,7 @@ Unattanded voting system for canteens.
 Development
 -----------
 
-Get perl, Mojolicious, Digest::SHA, DBI and DBD::SQLite installed.
+Get perl, Mojolicious, Digest::SHA, Session::Token, DBI and DBD::SQLite installed.
 
 To create the database:
 

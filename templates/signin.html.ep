@@ -1,0 +1,28 @@
+% layout 'back', title => 'Sign in';
+
+<form method="POST" action="/signin" class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="email">
+            E-mail
+        </label>
+        <div class="controls">
+            <input type="email" name="email">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="password">
+            Password
+        </label>
+        <div class="controls">
+            <input type="password" name="password">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <input type="submit" value="Sign in" class="btn btn-primary">
+        </div>
+    </div>
+</form>
+
