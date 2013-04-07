@@ -190,7 +190,7 @@ post '/vote/:date' => sub {
     my @votes = map { $self->param($_) } grep /^vote_/, sort $self->param;
     save_votes($date, @votes);
 
-    return $self->redirect_to("/$date");
+    return $self->redirect_to("/vote/$date");
 };
 
 get '/signin' => sub { shift->render('signin'); };
