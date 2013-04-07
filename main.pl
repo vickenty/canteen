@@ -99,7 +99,7 @@ sub get_recent_votes {
     my $st = $db->prepare("select date, position, vote, count(*) from votes where date >= date('now', '-1 month') group by date, position, vote");
     $st->execute;
     my $votes = collect($st, "array", "hash", "hash");
-    my $max = $db->selectrow_array("select max(position) from votes where date >= date('now', '-1 month')");
+    my $max = $db->selectrow_array("select max(position) from menu where date >= date('now', '-1 month')");
     return ($votes, $max);
 }
 
