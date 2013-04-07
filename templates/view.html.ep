@@ -15,16 +15,18 @@
                 % foreach my $day (@$votes) {
                     <tr>
                         <td><%= $day->{key} %></td>
-                        % foreach my $item (@{$day->{value}}) {
+                        % my $val = $day->{value};
+                        % foreach my $item (0..$max_items) {
                             <td>
-                                % my $v = $item->{value};
+                            % my $v = $val->{$item};
+                            % if ($v) {
                                 <%= $v->{0}->[0] || 0 %> /
                                 <%= $v->{1}->[0] || 0 %> /
                                 <%= $v->{2}->[0] || 0 %>
+                            % } else {
+                                0 / 0 / 0
+                            % }
                             </td>
-                        % }
-                        % foreach ($#{$day->{value}} .. ($max_items - 1)) {
-                            <td>N/A</td>
                         % }
                     </tr>
                 %}

@@ -37,11 +37,11 @@ sub save_menu {
 }
 
 sub save_votes {
-    my ($date, @votes) = @_;
+    my ($date, %votes) = @_;
     my $db = get_db;
     my $st = $db->prepare("insert into votes (date, position, vote, user) values (?, ?, ?, ?)") or die($db->errstr);
-    foreach (0..$#votes) {
-        $st->execute($date, $_, $votes[$_], "");
+    foreach (keys %votes) {
+        $st->execute($date, $_, $votes{$_}, "");
     }
 }
 
@@ -95,7 +95,7 @@ sub get_recent_votes {
     my $db = get_db;
     my $st = $db->prepare("select date, position, vote, count(*) from votes where date >= date('now', '-1 month') group by date, position, vote");
     $st->execute;
-    my $votes = collect($st, "array", "array", "hash");
+    my $votes = collect($st, "array", "hash", "hash");
     my $max = $db->selectrow_array("select max(position) from votes where date >= date('now', '-1 month')");
     return ($votes, $max);
 }
@@ -187,8 +187,8 @@ post '/vote/:date' => sub {
     my $self = shift;
     my $date = $self->param("date");
 
-    my @votes = map { $self->param($_) } grep /^vote_/, sort $self->param;
-    save_votes($date, @votes);
+    my %votes = map { substr($_, 5) => $self->param($_) } grep /^vote_/, sort $self->param;
+    save_votes($date, %votes);
 
     return $self->redirect_to("/vote/$date");
 };
