@@ -11,13 +11,16 @@ do {
 };
 
 sub get_db {
-    DBI->connect("dbi:SQLite:main.db") or die(DBI->errstr);
+    DBI->connect("dbi:SQLite:main.db", "", "", {
+        RaiseError => 1,
+        AutoCommit => 1,
+    }) or die(DBI->errstr);
 }
 
 sub get_menu {
     my ($date) = @_;
     my $db = get_db;
-    my $st = $db->prepare("select name from menu where date = ? order by position") or die($db->errstr);
+    my $st = $db->prepare("select name from menu where date = ? order by position");
     $st->execute($date);
     my @menu;
     while (my ($name) = $st->fetchrow_array) {
@@ -29,17 +32,17 @@ sub get_menu {
 sub save_menu {
     my ($date, @items) = @_;
     my $db = get_db;
-    my $st = $db->prepare("replace into menu (date, position, name) values (?, ?, ?)") or die($db->errstr);
+    my $st = $db->prepare("replace into menu (date, position, name) values (?, ?, ?)");
     foreach (0..$#items) {
         $st->execute($date, $_, $items[$_]);
     }
-    $db->do("delete from menu where date = ? and position > ?", {}, $date, $#items) or die($db->errstr);
+    $db->do("delete from menu where date = ? and position > ?", {}, $date, $#items);
 }
 
 sub save_votes {
     my ($date, %votes) = @_;
     my $db = get_db;
-    my $st = $db->prepare("insert into votes (date, position, vote, user) values (?, ?, ?, ?)") or die($db->errstr);
+    my $st = $db->prepare("insert into votes (date, position, vote, user) values (?, ?, ?, ?)");
     foreach (keys %votes) {
         $st->execute($date, $_, $votes{$_}, "");
     }
