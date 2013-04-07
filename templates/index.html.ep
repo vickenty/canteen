@@ -1,9 +1,25 @@
 % layout 'back', title => "Edit menu";
 
-<ul>
-    % foreach my $item (@$dates) {
-        <li>
-            %= link_to $item => 'editdate' => {date => $item}
-        </li>
-    % }
-</ul>
+<div class="row">
+    <div class="span4">
+        <ul>
+            % foreach my $item (@$dates) {
+                <li>
+                    %= link_to $item => 'editdate' => {date => $item}
+                </li>
+            % }
+        </ul>
+    </div>
+    <div class="span4">
+        <form method="POST" class="form-inline">
+            <fieldset>
+                <legend>Add new menu</legend>
+                <div class="input-prepend">
+                    <span class="add-on">Date</span>
+                    <input type="date" name="date">
+                </div>
+                <input type="submit" value="Add" class="btn btn-primary">
+            </fieldset>
+        </form>
+    </div>
+</div>

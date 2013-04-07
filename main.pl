@@ -242,8 +242,13 @@ get '/view' => sub {
 get '/edit' => sub {
     my $self = shift;
     $self->stash(dates => get_menu_dates());
-    print $self->dumper($self->stash), "\n";
     return $self->render('index');
+};
+
+post '/edit' => sub {
+    my $self = shift;
+    my $date = $self->param('date');
+    return $self->redirect_to('editdate' => { date => $date });
 };
 
 get '/edit/:date' => sub {
