@@ -180,16 +180,33 @@ helper current_user => sub {
     return ($user && $attr) ? $user->{$attr} : $user;
 };
 
+helper param_validate => sub {
+    my ($self, $name) = @_;
+    my $value = $self->param($name);
+    if ($name =~ /date/) {
+        return ($value =~ /\A[0-9]{4}(?:-[0-9]{2}){2}\z/) ? $value : undef;
+    }
+
+    return $value;
+};
+
 get '/vote/:date' => sub {
     my $self = shift;
-    my $date = $self->param("date");
-    $self->stash(menu => get_menu($date));
+    my $date = $self->param_validate("date");
+    return $self->render_not_found unless ($date);
+
+    my $menu = get_menu($date);
+    return $self->render_not_found unless ($menu && @$menu);
+
+    $self->stash(menu => $menu);
     return $self->render('vote');
 };
 
 post '/vote/:date' => sub {
     my $self = shift;
-    my $date = $self->param("date");
+    my $date = $self->param_validate("date");
+
+    return $self->render_not_found unless ($date);
 
     my %votes = map { substr($_, 5) => $self->param($_) } grep /^vote_/, sort $self->param;
     save_votes($date, %votes);
@@ -247,13 +264,19 @@ get '/edit' => sub {
 
 post '/edit' => sub {
     my $self = shift;
-    my $date = $self->param('date');
+    my $date = $self->param_validate('date');
+    unless ($date) {
+        $self->flash(type => "error", message => "Invalid date. Please use YYYY-MM-DD format.");
+        return $self->redirect_to('edit');
+    }
     return $self->redirect_to('editdate' => { date => $date });
 };
 
 get '/edit/:date' => sub {
     my $self = shift;
-    my $date = $self->param('date');
+
+    my $date = $self->param_validate('date');
+    return $self->render_not_found unless ($date);
 
     $self->stash(menu => get_menu($date));
 
@@ -262,7 +285,9 @@ get '/edit/:date' => sub {
 
 post '/edit/:date' => sub {
     my $self = shift;
-    my $date = $self->param('date');
+
+    my $date = $self->param_validate('date');
+    return $self->render_not_found unless ($date);
 
     my @items = map { $self->param($_) || () } grep /name_/, sort $self->param;
     save_menu($date, @items);
