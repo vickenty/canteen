@@ -1,0 +1,9 @@
+% layout 'back', title => "Edit menu";
+
+<ul>
+    % foreach my $item (@$dates) {
+        <li>
+            %= link_to $item => 'editdate' => {date => $item}
+        </li>
+    % }
+</ul>

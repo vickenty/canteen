@@ -140,6 +140,10 @@ sub change_password {
     get_db->do("update users set password = ? where rowid = ?", {}, $hash, $uid);
 }
 
+sub get_menu_dates {
+    return get_db->selectcol_arrayref("select distinct date from menu where date >= date('now', '-1 month') order by date desc");
+}
+
 sub validate_password {
     my ($salted, $password) = @_;
     return 1 unless ($salted);
@@ -235,6 +239,12 @@ get '/view' => sub {
     return $self->render('view');
 };
 
+get '/edit' => sub {
+    my $self = shift;
+    $self->stash(dates => get_menu_dates());
+    print $self->dumper($self->stash), "\n";
+    return $self->render('index');
+};
 
 get '/edit/:date' => sub {
     my $self = shift;
