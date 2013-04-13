@@ -13,7 +13,7 @@
 <body>
 <div class="container">
 	<form id="canteen_voting" name="canteen_voting" method="post">
-        %= t 'input', name => 'date', type => 'hidden', value => $date
+        %= t 'input', id => 'date', name => 'date', type => 'hidden', value => $date
 		<ul>
             % my @votes = ( "Good", "Neutral", "Bad" );
             % foreach my $i (0 .. $#{$menu}) {
@@ -32,4 +32,8 @@
 		<input type="submit" value="Vote" id="submit_button">
 	</form>	
 </div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/refresh.js"></script>
+
 </body>
