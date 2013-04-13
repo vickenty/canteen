@@ -14,22 +14,27 @@
 <div class="container">
 	<form id="canteen_voting" name="canteen_voting" method="post">
         %= t 'input', id => 'date', name => 'date', type => 'hidden', value => $date
-		<ul>
-            % my @votes = ( "Good", "Neutral", "Bad" );
-            % foreach my $i (0 .. $#{$menu}) {
-                % my $name = $menu->[$i];
-                <li>
-                    <span><%= $name %></span>
-                    % foreach my $j (0 .. $#votes) {
-                        <label>
-                            <input type="radio" name="vote_<%= $i %>" value="<%= $j %>">
-                            <%= $votes[$j] %>
-                        </label>
-                    % }
-                </li>
-            % }
-		</ul>
-		<input type="submit" value="Vote" id="submit_button">
+        % if (@$menu) {
+            <ul>
+                % my @votes = ( "Good", "Neutral", "Bad" );
+                % foreach my $i (0 .. $#{$menu}) {
+                    % my $name = $menu->[$i];
+                    <li>
+                        <span><%= $name %></span>
+                        % foreach my $j (0 .. $#votes) {
+                            <label>
+                                <input type="radio" name="vote_<%= $i %>" value="<%= $j %>">
+                                <%= $votes[$j] %>
+                            </label>
+                        % }
+                    </li>
+                % }
+            </ul>
+            <input type="submit" value="Vote" id="submit_button">
+        % } else {
+            <h1>404</h1>
+            <p>Kitchen not found</p>
+        % }
 	</form>	
 </div>
 
