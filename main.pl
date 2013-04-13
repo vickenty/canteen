@@ -2,6 +2,7 @@ use DBI;
 use Mojolicious::Lite;
 use Session::Token;
 use Digest::SHA qw/sha1_hex/;
+use POSIX qw/strftime/;
 
 plugin 'DefaultHelpers';
 
@@ -27,6 +28,10 @@ sub get_menu {
         push @menu, $name;
     }
     return \@menu;
+}
+
+sub today {
+    return strftime("%Y-%m-%d", localtime);
 }
 
 sub save_menu {
@@ -193,28 +198,31 @@ helper param_validate => sub {
     return $value;
 };
 
-get '/vote/:date' => sub {
+get '/vote' => sub {
     my $self = shift;
-    my $date = $self->param_validate("date");
-    return $self->render_not_found unless ($date);
 
+    my $date = today;
     my $menu = get_menu($date);
-    return $self->render_not_found unless ($menu && @$menu);
 
-    $self->stash(menu => $menu);
+    die $self->dumper($menu) unless ($menu && @$menu);
+
+    $self->stash(
+        date => $date,
+        menu => $menu,
+    );
     return $self->render('vote');
 };
 
-post '/vote/:date' => sub {
+post '/vote' => sub {
     my $self = shift;
-    my $date = $self->param_validate("date");
 
+    my $date = $self->param_validate("date");
     return $self->render_not_found unless ($date);
 
     my %votes = map { substr($_, 5) => $self->param($_) } grep /^vote_/, sort $self->param;
     save_votes($date, %votes);
 
-    return $self->redirect_to("/vote/$date");
+    return $self->redirect_to("/vote");
 };
 
 get '/signin' => sub { shift->render('signin'); };

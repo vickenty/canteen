@@ -13,6 +13,7 @@
 <body>
 <div class="container">
 	<form id="canteen_voting" name="canteen_voting" method="post">
+        %= t 'input', name => 'date', type => 'hidden', value => $date
 		<ul>
             % my @votes = ( "Good", "Neutral", "Bad" );
             % foreach my $i (0 .. $#{$menu}) {
