@@ -204,8 +204,6 @@ get '/vote' => sub {
     my $date = today;
     my $menu = get_menu($date);
 
-    die $self->dumper($menu) unless ($menu && @$menu);
-
     $self->stash(
         date => $date,
         menu => $menu,
