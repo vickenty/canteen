@@ -24,5 +24,8 @@ $(function() {
         setTimeout(try_refresh, 30000);
     }
 
-    schedule();
+    if (date)
+        schedule();
+    else
+        setTimeout(function() { location.reload() }, 15000);
 });
