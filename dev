@@ -1,0 +1,8 @@
+#!/bin/bash
+
+uid=`id -u`
+port=$((uid + 10000))
+
+test -f main.db || sqlite3 main.db < schema.sql
+
+morbo -l http://*:$port main.pl

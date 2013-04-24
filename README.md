@@ -14,4 +14,4 @@ To create the database:
 
 To run development server:
 
-    morbo main.pl
+    ./dev
