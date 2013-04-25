@@ -3,6 +3,14 @@
 uid=`id -u`
 port=$((uid + 10000))
 
-test -f main.db || sqlite3 main.db < schema.sql
+set -e
 
-morbo -l http://*:$port main.pl
+if [ ! -f main.db ]; then
+    echo "*********************"
+    echo "Creating new database"
+    echo "Log in using demo@example.test with empty password"
+    echo "*********************"
+    cat schema.sql demo.sql | sqlite3 main.db
+fi
+
+morbo -l http://`hostname -f`:$port main.pl
