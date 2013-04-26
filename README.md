@@ -8,10 +8,6 @@ Development
 
 Get perl, Mojolicious, Digest::SHA, Session::Token, DBI and DBD::SQLite installed.
 
-To create the database:
-
-    sqlite3 main.db < schema.sql
-
 To run development server:
 
     ./dev
