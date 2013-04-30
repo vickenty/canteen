@@ -1,18 +1,18 @@
-% layout "back", title => "Edit menu for $date";
+% layout "back", title => "Edit meals from the $date menu";
 
 <form class="form-horizontal" method="POST">
 % foreach (0..$#{$menu}) {
     <div class="control-group">
-        <input name="name_<%= $_ %>" value="<%= $menu->[$_] %>">
+        <input type="text" name="name_<%= $_ %>" value="<%= $menu->[$_] %>">
     </div>
 % }
 % foreach (@$menu .. 5) {
     <div class="control-group">
-        <input name="name_<%= $_ %>">
+        <input type="text" name="name_<%= $_ %>">
     </div>
 % }
 <div class="control-group template" data-clone="before">
-    <input name="name_new">
+    <input type="text" name="name_new">
 </div>
 
 <div class="control-group">
