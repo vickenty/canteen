@@ -35,7 +35,7 @@
 
             % my $msg = flash 'message';
             % if ($msg) {
-                % my $type = flash('type');
+                % my $type = flash 'type';
                 % $type = "alert-$type" if ($type);
                 %= tag 'div', class => join(' ', 'alert', $type), => begin
                     <button class="close" data-dismiss="alert">&times;</button>

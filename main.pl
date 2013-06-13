@@ -315,7 +315,8 @@ post '/edit/:date' => sub {
     my @items = map { $self->param($_) || () } grep /name_/, sort $self->param;
     save_menu($date, @items);
 
-    return $self->redirect_to("/edit/$date");
+    $self->flash(type => "success", message => "Changes saved.");
+    return $self->redirect_to("/edit");
 };
 
 get '/profile' => sub { shift->render('profile'); };
