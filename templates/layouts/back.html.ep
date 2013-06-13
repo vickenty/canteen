@@ -12,7 +12,6 @@
         <title><%= title %></title>
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
         <link href="/vendor/datepicker.css" rel="stylesheet">
-        <link href="/edit_style.css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
