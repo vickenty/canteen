@@ -1,25 +1,20 @@
 % layout 'back', title => "Edit menu";
 
-<div class="row">
-    <div class="span4">
-        <ul>
-            % foreach my $item (@$dates) {
-                <li>
-                    %= link_to $item => 'editdate' => {date => $item}
-                </li>
+% while (my @week = splice(@$dates, 0, 7)) {
+    <div>
+    % foreach my $item (@week) {
+        %= t 'div', class => calendar_date_classes($item)
+            %= link_to "$item->{day}, $item->{day_name}" => 'editdate' => {date => $item->{date}}
+            % if ($item->{menu}) {
+                <ul class="date-menu">
+                    % foreach my $name (@{$item->{menu}}) {
+                        <li class="date-menu-item"><%= $name %></li>
+                    % }
+                </ul>
+            % } else {
+                <p><em>No menu</em></p>
             % }
-        </ul>
+        </div>
+    % }
     </div>
-    <div class="span4">
-        <form method="POST" class="form-inline">
-            <fieldset>
-                <legend>Add new menu</legend>
-                <div class="input-prepend">
-                    <span class="add-on">Date</span>
-                    <input type="date" name="date">
-                </div>
-                <input type="submit" value="Add" class="btn btn-primary">
-            </fieldset>
-        </form>
-    </div>
-</div>
+% }

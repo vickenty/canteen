@@ -2,7 +2,8 @@ use DBI;
 use Mojolicious::Lite;
 use Session::Token;
 use Digest::SHA qw/sha1_hex/;
-use POSIX qw/strftime/;
+use POSIX qw/strftime setlocale LC_ALL/;
+use DateTime;
 
 plugin 'DefaultHelpers';
 
@@ -149,7 +150,33 @@ sub change_password {
 }
 
 sub get_menu_dates {
-    return get_db->selectcol_arrayref("select distinct date from menu where date >= date('now', '-1 month') order by date desc");
+    my $today = DateTime->now;
+    # Beginning of last week.
+    my $first = $today->clone->subtract(days => $today->local_day_of_week + 6);
+    my $last = $first->clone->add(days => 21);
+
+    my $st = get_db->prepare("select date, name from menu where date between ? and ? order by date asc, position asc");
+    $st->execute($first->ymd, $last->ymd);
+    my $menus = collect($st, "hash", "array");
+
+    my @res;
+    while ($first < $last) {
+        my $menu = $menus->{$first->ymd};
+        push @res, {
+            date => $first->ymd,
+            today => $first == $today,
+            local_day_of_week => $first->local_day_of_week,
+            day_of_week => $first->day_of_week,
+            day => $first->day,
+            day_name => $first->strftime("%a"),
+            menu => $menu && [ map { $_->{key} } @$menu ],
+        };
+
+        print Data::Dumper::Dumper($res[-1]);
+        $first->add(days => 1);
+    }
+
+    return \@res;
 }
 
 sub validate_password {
@@ -196,6 +223,16 @@ helper param_validate => sub {
     }
 
     return $value;
+};
+
+helper calendar_date_classes => sub {
+    my ($self, $item) = @_;
+    return join(" ",
+        "calendar-item",
+        $item->{today} ? "calendar-today" : (),
+        $item->{local_day_of_week} == 1 ? "calendar-first" : (),
+        $item->{day_of_week} > 5 ? "calendar-weekend" : ()
+    );
 };
 
 get '/vote' => sub {
@@ -337,5 +374,6 @@ post '/profile' => sub {
     return $self->redirect_to('/profile');
 };
 
+DateTime->DefaultLocale(setlocale(LC_ALL, ""));
 app->secret($ENV{"SESSION_SECRET"} || Session::Token->new->get);
 app->start;
