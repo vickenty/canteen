@@ -151,7 +151,7 @@ sub change_password {
 }
 
 sub get_menu_dates {
-    my $today = DateTime->now;
+    my $today = DateTime->today(time_zone => 'local');
     # Beginning of last week.
     my $first = $today->clone->subtract(days => $today->local_day_of_week + 6);
     my $last = $first->clone->add(days => 21);
@@ -172,8 +172,6 @@ sub get_menu_dates {
             day_name => $first->strftime("%a"),
             menu => $menu && [ map { $_->{key} } @$menu ],
         };
-
-        print Data::Dumper::Dumper($res[-1]);
         $first->add(days => 1);
     }
 
