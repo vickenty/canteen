@@ -19,7 +19,7 @@
 		<h1>How was your food today?</h1>
 
 	    <ul>
-	        % my @votes = ( "Good", "Neutral", "Bad" );
+	        % my @votes = ( "Good", "Normal", "Bad" );
 	        % foreach my $i (0 .. $#{$menu}) {
 	            % my $name = $menu->[$i];
 	            <li>
@@ -27,16 +27,7 @@
 	                % foreach my $j (0 .. $#votes) {
 	                    <label class="push_button vote_<%= $j %>">
 	                        <input type="radio" name="vote_buttons_<%= $i %>" value="<%= $j %>">
-	                        % if ( $j == 0 ) {
-	                        	Good
-	                        % } else {
-	                        	% if ( $j == 1 ) {
-	                        		Neutral
-								% } else {
-									Bad
-								% }
-							% }
-	                        
+                            <%= $votes[$j] %>
 	                    </label>
 	                % }
 	            </li>
