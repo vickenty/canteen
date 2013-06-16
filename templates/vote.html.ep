@@ -16,7 +16,8 @@
 	<form id="canteen_voting" name="canteen_voting" method="post">
 		%= t 'input', id => 'date', name => 'date', type => 'hidden', value => $date
 
-		<h1><%= $date %></h1>
+		<h1>How was your food today?</h1>
+
 	    <ul>
 	        % my @votes = ( "Good", "Neutral", "Bad" );
 	        % foreach my $i (0 .. $#{$menu}) {
@@ -26,6 +27,16 @@
 	                % foreach my $j (0 .. $#votes) {
 	                    <label class="push_button vote_<%= $j %>">
 	                        <input type="radio" name="vote_buttons_<%= $i %>" value="<%= $j %>">
+	                        % if ( $j == 0 ) {
+	                        	Good
+	                        % } else {
+	                        	% if ( $j == 1 ) {
+	                        		Neutral
+								% } else {
+									Bad
+								% }
+							% }
+	                        
 	                    </label>
 	                % }
 	            </li>
@@ -45,5 +56,24 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/refresh.js"></script>
+
+<script type="text/javascript">	
+	
+	$('#canteen_voting .push_button input:radio').click(
+    function(){
+     
+     	var myLabel = $(this).attr('name');
+        
+        $('input:radio[name='+myLabel+']').parent().removeClass('active');
+		$(this).parent().addClass('active');
+    });
+    
+	
+	$("#submit_button").click ( function () {
+		$(this).addClass('pushed_in');		
+	});
+	
+	
+</script>
 
 </body>

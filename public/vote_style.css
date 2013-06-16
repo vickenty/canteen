@@ -9,7 +9,7 @@ body {
 
 .container {
 	margin: 0 auto;
-	width: 1000px;
+	width: 980px;
 	text-align: center;
 }
 
@@ -18,7 +18,7 @@ body {
 }
 
 #canteen_voting h1 {
-	font-size: 3em;
+	font-size: 2em;
 	margin: 0;
 	padding: 0;
 	text-align: left;
@@ -45,87 +45,68 @@ body {
 	float: left;
 	font-size: 1.5em;
 	margin-right: 2em;
-	min-width: 20em;
+	min-width: 18em;
 	line-height: 72px;
 }
 
 /* buttons styling */
 
 #canteen_voting input {
-	display: block;
+	display: none;
 }
 
 .push_button {
-	float: left;
-	padding:1.5em;
-	margin: 0 3em 1em 0;
-	width: 23px;
-	height: 20px;
-	
-	position:relative;
-	display:block;
-	
-	color:#FFF;
+	font-family: 'Helvetica', sans-serif;
+	font-size: 1.2em;
 	text-decoration:none;
 	text-align:center;
 	
-	-webkit-border-radius:35px;
-	border-radius:35px;
+	float: left;
+	padding: 1em 2em;
+	margin: 0;
+	display:block;
 	
-	-webkit-transition: all 0.1s;
-	-moz-transition: all 0.1s;
-	transition: all 0.1s;
-}
-
-.push_button:active,
-.vote_0 + input[type="radio"]:checked,
-.vote_1 + input[type="radio"]:checked,
-.vote_1 + input[type="radio"]:checked
- {
-    position:relative;
-    top:5px;
+	background: #eee;
+	border: 1px solid #fff;
 }
 
 /* good */
 .vote_0 {
-	border:solid 1px #009933;
-	background: url('images/thumbs_sprint.png') no-repeat 20px 21px, -webkit-linear-gradient(top, #00CC33, #009933);
-	background: url('images/thumbs_sprint.png') no-repeat 20px 21px, linear-gradient(to bottom, #00CC33, #009933);
-	-webkit-box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 4px 0 #006633, 0 4px 2px rgba(0, 0, 0, .5);
-	box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 4px 0 #006633, 0 4px 2px rgba(0, 0, 0, .5);
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+	
+	color: #2ECC71;
 }
 
-.vote_0 + input[type="radio"]:checked, .vote_0:hover, .vote_0.active {
-	background: url('images/thumbs_sprint.png') no-repeat 20px 21px, -webkit-linear-gradient(top, #008900, #00AC39);
-	background: url('images/thumbs_sprint.png') no-repeat 20px 21px, linear-gradient(top, #008900, #00AC39);
+.vote_0.active {
+	background: #2ECC71;
+	color: white;
 }
 
 /* neutral */
 .vote_1 {
-	border:1px solid #EFC000;
-	background: url('images/thumbs_sprint.png') no-repeat 20px -78px, -webkit-linear-gradient(top, #FFCC00, #EFC000);
-	background: url('images/thumbs_sprint.png') no-repeat 20px -78px, linear-gradient(top, #FFCC00, #EFC000);		
-	-webkit-box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 4px 0 #B28F00, 0 4px 2px rgba(0, 0, 0, .5);
-	box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 4px 0 #B28F00, 0 4px 2px rgba(0, 0, 0, .5);
+	border-left: 0;
+	border-right: 0;
+
+	color: #F39C12;	
 }
 
-.vote_1 + input[type="radio"]:checked, .vote_1:hover, .vote_1.active {
-	background: url('images/thumbs_sprint.png') no-repeat 20px -78px, -webkit-linear-gradient(top, #D0B600, #F1C200);
-	background: url('images/thumbs_sprint.png') no-repeat 20px -78px, linear-gradient(top, #D0B600, #F1C200);
+.vote_1.active {
+	background: #F39C12;
+	color: white;
 }
 
 /* bad */
-.vote_2 {
-	border:1px solid #990000;
-	background: url('images/thumbs_sprint.png') no-repeat 20px -27px, -webkit-linear-gradient(top, #CC0000, #990000);
-	background: url('images/thumbs_sprint.png') no-repeat 20px -27px, linear-gradient(top, #CC0000, #990000);
-	-webkit-box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 4px 0 #660000, 0 4px 2px rgba(0, 0, 0, .5);
-	box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 4px 0 #660000, 0 4px 2px rgba(0, 0, 0, .5);
+.vote_2 {		
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+	
+	color: #E74C3C;	
 }
 
-.vote_2 + input[type="radio"]:checked, .vote_2:hover, .vote_2.active {
-	background: url('images/thumbs_sprint.png') no-repeat 20px -27px, -webkit-linear-gradient(top, #770000, #990000);
-	background: url('images/thumbs_sprint.png') no-repeat 20px -27px, linear-gradient(top, #770000, #990000);
+.vote_2.active {
+	background: #E74C3C;
+	color: white;
 }
 
 /* submit button */
@@ -145,16 +126,12 @@ body {
 	font-size: 1.5em;
 	color: white;
 	border-radius: 5px;
-	border:solid 1px #009933;
-	background: -webkit-linear-gradient(top, #00CC33, #009933);
-	background: linear-gradient(to bottom, #00CC33, #009933);
-	-webkit-box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 4px 0 #006633, 0 4px 2px rgba(0, 0, 0, .5);
-	box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 4px 0 #006633, 0 4px 2px rgba(0, 0, 0, .5);
+	border:solid 1px #2980B9;
+	background: #3498DB;
 }
 
-#canteen_voting .button_container #submit_button:hover {
-	background: -webkit-linear-gradient(top, #008900, #00AC39);
-	background: linear-gradient(top, #008900, #00AC39);
+#canteen_voting .button_container #submit_button.pushed_in {
+	background: #2980B9;
 }
 
 /* end of button styling */
