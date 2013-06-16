@@ -12,9 +12,10 @@
 
 <body>
 <div class="container">
-	%= t 'input', id => 'date', name => 'date', type => 'hidden', value => $date
 	% if (@$menu) {	
 	<form id="canteen_voting" name="canteen_voting" method="post">
+		%= t 'input', id => 'date', name => 'date', type => 'hidden', value => $date
+
 		<h1><%= $date %></h1>
 	    <ul>
 	        % my @votes = ( "Good", "Neutral", "Bad" );
@@ -37,7 +38,7 @@
 	</form>	   
 	    
 	% } else {
-	    <h1>404</h1>
+	    <h1>Sorry</h1>
 	    <p>Today's menu wasn't found</p>
 	% }
 </div>

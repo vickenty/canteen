@@ -52,6 +52,7 @@ body {
 /* buttons styling */
 
 #canteen_voting input {
+	display: block;
 }
 
 .push_button {
