@@ -16,6 +16,7 @@ sub get_db {
     DBI->connect("dbi:SQLite:main.db", "", "", {
         RaiseError => 1,
         AutoCommit => 1,
+        sqlite_unicode => 1,
     }) or die(DBI->errstr);
 }
 
