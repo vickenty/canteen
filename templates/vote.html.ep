@@ -32,16 +32,7 @@
 
 	                    <div class="push_button vote_<%= $j %>">
 	                        <input type="radio" name="vote_<%= $i %>" value="<%= $j %>">
-	                        % if ( $j == 0 ) {
-	                        	Good
-	                        % } else {
-	                        	% if ( $j == 1 ) {
-	                        		Neutral
-								% } else {
-									Bad
-								% }
-							% }
-	                        
+	                        <%= $votes[$j] %>	                        
 	                    </div>
 	                % }
 	            </li>
