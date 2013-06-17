@@ -375,6 +375,6 @@ post '/profile' => sub {
     return $self->redirect_to('/profile');
 };
 
-DateTime->DefaultLocale(setlocale(LC_ALL, ""));
+DateTime->DefaultLocale(setlocale(LC_ALL, "") || "C");
 app->secret($ENV{"SESSION_SECRET"} || Session::Token->new->get);
 app->start;
