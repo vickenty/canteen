@@ -255,7 +255,9 @@ post '/vote' => sub {
 
     my %votes = map { substr($_, 5) => $self->param($_) } grep /^vote_/, sort $self->param;
     save_votes($date, %votes);
-
+	
+	$self->flash(message => "Thank you! Your feedback has been submitted.");
+	
     return $self->redirect_to("/vote");
 };
 

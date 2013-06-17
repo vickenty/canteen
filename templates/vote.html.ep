@@ -3,6 +3,10 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="user-scalable=no,initial-scale=1.0">
+
+
 
 <title>Rate our Canteen menu items</title>
 
@@ -18,24 +22,41 @@
 
 		<h1>How was your food today?</h1>
 
-	    <ul>
-	        % my @votes = ( "Good", "Normal", "Bad" );
+	    <ul id="votelist">
+	        % my @votes = ( "Good", "Neutral", "Bad" );
 	        % foreach my $i (0 .. $#{$menu}) {
 	            % my $name = $menu->[$i];
 	            <li>
 	                <span><%= $name %></span>
 	                % foreach my $j (0 .. $#votes) {
-	                    <label class="push_button vote_<%= $j %>">
-	                        <input type="radio" name="vote_buttons_<%= $i %>" value="<%= $j %>">
-                            <%= $votes[$j] %>
-	                    </label>
+
+	                    <div class="push_button vote_<%= $j %>">
+	                        <input type="radio" name="vote_<%= $i %>" value="<%= $j %>">
+	                        % if ( $j == 0 ) {
+	                        	Good
+	                        % } else {
+	                        	% if ( $j == 1 ) {
+	                        		Neutral
+								% } else {
+									Bad
+								% }
+							% }
+	                        
+	                    </div>
 	                % }
 	            </li>
 	        % }
 	    </ul>
 	    
+	    % my $msg = flash 'message';
 	    <div class="button_container">
-		    <button type="submit" id="submit_button">Vote</button>
+		    <button type="submit" data-normal="Submit feedback" id="submit_button">
+		    	% if ($msg) {
+		    		%= $msg
+		    	% } else {
+		    		Submit feedback
+		    	% }
+		    </button>
 	    </div>
 	</form>	   
 	    
@@ -47,24 +68,6 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/refresh.js"></script>
-
-<script type="text/javascript">	
-	
-	$('#canteen_voting .push_button input:radio').click(
-    function(){
-     
-     	var myLabel = $(this).attr('name');
-        
-        $('input:radio[name='+myLabel+']').parent().removeClass('active');
-		$(this).parent().addClass('active');
-    });
-    
-	
-	$("#submit_button").click ( function () {
-		$(this).addClass('pushed_in');		
-	});
-	
-	
-</script>
+<script src="/buttons.js"></script>
 
 </body>
