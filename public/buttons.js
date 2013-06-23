@@ -1,6 +1,6 @@
 $(function() {
 
-	$("#votelist .push_button").bind('touchstart', function () {
+	$("#votelist .push_button").bind('click touchstart', function () {
 	
 		// remove active class from all inputs within a meal type 
 		// (go to parent, then identify all labels, remove class 'active' then all radios and deselect all)
