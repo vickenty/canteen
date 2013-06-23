@@ -1,0 +1,7 @@
+<form class="form-horizontal" method="post">
+    %= field label => "E-mail", name => "email", type => "email", value => $user->{email}
+    %= field label => "Password", name => "password", type => "password"
+    %= field label => "Confirm password", name => "confirm", type => "password"
+    %= field label => "Active", name => "active", type => "checkbox", value => "active", checked => $user->{active}
+    %= field type => "submit", value => $action, class=> "btn btn-primary"
+</form>

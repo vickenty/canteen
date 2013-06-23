@@ -1,0 +1,4 @@
+% layout 'back', title => "New user";
+
+%= include 'users_form', user => $user, action => "Create";
+

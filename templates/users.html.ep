@@ -1,0 +1,27 @@
+% layout 'back', title => "Users";
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>E-mail</th>
+            <th>Created</th>
+            <th>Last login</th>
+        </tr>
+    </thead>
+    <tbody>
+    % foreach my $user (@$users) {
+        <tr>
+            <td>
+                <a href="/users/<%= $user->{rowid} %>"><%= $user->{email} %></a>
+                % unless ($user->{active}) {
+                    <span class="label">Disabled</span>
+                % }
+            </td>
+            <td><%= $user->{created_at} %></td>
+            <td><%= $user->{last_login_at} %></td>
+        </tr>
+    % }
+    </tbody>
+</table>
+
+<a href="/users/new">Create new user</a>

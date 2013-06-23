@@ -1,0 +1,8 @@
+<div class="control-group">
+    % if (my $label = stash 'label') {
+        %= t 'label', class => "control-label", maybe('name', undef, 'for'), $label
+    % }
+    <div class="controls">
+        %= t 'input', type => $type, maybe('name'), maybe('value'), maybe('checked', 'checked'), maybe('class')
+    </div>
+</div>

@@ -12,6 +12,10 @@ do {
     sub token_generator { $generator }
 };
 
+sub fail {
+    die bless { message => shift }, "Canteen::Error";
+}
+
 sub get_db {
     DBI->connect("dbi:SQLite:main.db", "", "", {
         RaiseError => 1,
@@ -119,17 +123,51 @@ sub hash_password {
     return join(".", $salt, sha1_hex("$salt.$password"));
 }
 
+sub modify_user {
+    my $code = shift;
+    eval {
+        $code->(@_);
+    } or do {
+        my $error = $@;
+        if ($error =~ /email is not unique/i) {
+            fail "There is already a user with this e-mail address.";
+        }
+        die $error;
+    };
+}
+
 sub create_user {
-    my ($email, $password) = @_;
+    my ($email, $password, $active) = @_;
     my $hash = new_hash_password($password);
+    $active = $active ? 1 : 0;
+
     my $db = get_db;
-    $db->do("insert into users (email, password, created_at) values (?, ?, datetime('now'))", {}, $email, $hash);
-    return $db->last_insert_id;
+    modify_user sub {
+        $db->do("insert into users (email, password, active, created_at) values (?, ?, ?, datetime('now'))", {}, $email, $hash, $active);
+    };
+
+}
+
+sub update_user {
+    my ($uid, $email, $password, $active) = @_;
+    my $db = get_db;
+    $active = $active ? 1 : 0;
+    modify_user sub {
+        $db->do('update users set email = ?, active = ? where rowid = ?', {}, $email, $active, $uid);
+    };
+    if ($password) {
+        my $hash = new_hash_password($password);
+        $db->do('update users set password = ? where rowid = ?', {}, $hash, $uid);
+    }
+}
+
+sub list_users {
+    return get_db->selectall_arrayref("select rowid, email, last_login_at, active, created_at from users", { Slice => {} });
 }
 
 sub get_user {
     my ($uid) = @_;
-    return get_db->selectrow_hashref("select rowid, email from users where rowid = ? and active > 0", {}, $uid);
+    return get_db->selectrow_hashref("select rowid, email, active from users where rowid = ?", {}, $uid);
 }
 
 sub get_user_by_email {
@@ -186,6 +224,16 @@ sub validate_password {
     return $salted eq hash_password($salt, $password);
 }
 
+helper handle_error => sub {
+    my ($self, $error) = @_;
+    if (ref $error eq "Canteen::Error") {
+        $self->stash(error => $error->{message});
+    } else {
+        die $error;
+    }
+    return undef;
+};
+
 helper login => sub {
     my ($self, $email, $password) = @_;
     my $user = get_user_by_email($email);
@@ -199,7 +247,8 @@ helper login => sub {
 helper authenticate => sub {
     my $self = shift;
     my $user = get_user($self->session->{user_id});
-    $self->stash(user => $user);
+    return unless ($user->{active});
+    $self->stash(current_user => $user);
     return $user;
 };
 
@@ -210,7 +259,7 @@ helper url_match => sub {
 
 helper current_user => sub {
     my ($self, $attr) = @_;
-    my $user = $self->stash('user');
+    my $user = $self->stash('current_user');
     return ($user && $attr) ? $user->{$attr} : $user;
 };
 
@@ -232,6 +281,71 @@ helper calendar_date_classes => sub {
         $item->{local_day_of_week} == 1 ? "calendar-first" : (),
         $item->{day_of_week} > 5 ? "calendar-weekend" : ()
     );
+};
+
+helper field => sub {
+    my $self = shift;
+    return $self->include("parts/field", @_);
+};
+
+helper maybe => sub {
+    my ($self, $name, $value, $attr) = @_;
+
+    if (my $default = $self->stash->{$name}) {
+        return (($attr || $name) => ($value || $default));
+    }
+
+    return ();
+};
+
+helper save_user => sub {
+    my $self = shift;
+
+    my $uid = $self->param('uid');
+    my $email = $self->param('email');
+    my $password = $self->param('password');
+    my $active = $self->param('active');
+
+    unless ($self->stash('user')) {
+        $self->stash(user => {
+            email => $email,
+            password => $password,
+            active => $active,
+        });
+    }
+
+    eval {
+        fail "Password can't be empty." unless ($uid || $password);
+        fail 'Passwords do not match.' unless ($password eq $self->param('confirm'));
+        1;
+    } or do {
+        return $self->handle_error($@);
+    };
+
+    eval {
+        if ($uid) {
+            update_user($uid, $email, $password, $active);
+        } else {
+            create_user($email, $password, $active);
+        }
+        return 1;
+    } or do {
+        my $error = $@;
+        return $self->handle_error($error);
+    };
+};
+
+helper get_user => sub {
+    my $self = shift;
+    my $user = get_user($self->param('uid'));
+    $self->stash(user => $user);
+    return $user;
+};
+
+
+helper success => sub {
+    my ($self, $msg) = @_;
+    $self->flash(type => 'success', message => $msg);
 };
 
 get '/vote' => sub {
@@ -282,7 +396,7 @@ post '/signin' => sub {
     my $user = $self->login($self->param("email"), $self->param('password'));
 
     unless ($user) {
-        $self->flash(type => 'error', message => "Invalid e-email address or password.");
+        $self->flash(type => 'error', message => "Invalid e-mail address or password.");
         return $self->redirect_to('/signin');
     }
 
@@ -357,23 +471,54 @@ post '/edit/:date' => sub {
     return $self->redirect_to("/edit");
 };
 
-get '/profile' => sub { shift->render('profile'); };
-
-post '/profile' => sub {
+get '/users' => sub {
     my $self = shift;
 
-    my $password = $self->param("password");
+    $self->stash(users => list_users);
 
-    if (!$password) {
-        $self->flash(type => "error", message => "Password can't be empty.");
-    } elsif ($password eq $self->param("confirm")) {
-        change_password($self->current_user->{rowid}, $password);
-        $self->flash(type => 'success', message => 'Password was changed.');
-    } else {
-        $self->flash(type => 'error', message => "Passwords do not match.");
-    }
-    return $self->redirect_to('/profile');
+    return $self->render('users');
 };
+
+get '/users/new' => sub {
+    my $self = shift;
+
+    $self->stash(user => { active => 1});
+
+    $self->render("users_new");
+};
+
+post '/users/new' => sub {
+    my $self = shift;
+
+    if ($self->save_user) {
+        $self->success("User created.");
+        return $self->redirect_to('/users');
+    } else {
+        return $self->render('users_new');
+    }
+};
+
+get '/users/:uid' => sub {
+    my $self = shift;
+
+    $self->get_user or return $self->render_not_found;
+
+    return $self->render('users_edit');
+};
+
+post '/users/:uid' => sub {
+    my $self = shift;
+
+    $self->get_user or return $self->render_not_found;
+
+    if ($self->save_user) {
+        $self->success('User saved.');
+        return $self->redirect_to('/users');
+    } else {
+        return $self->render('users_edit');
+    }
+};
+
 
 DateTime->DefaultLocale(setlocale(LC_ALL, "") || "C");
 app->secret($ENV{"SESSION_SECRET"} || Session::Token->new->get);
