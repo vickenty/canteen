@@ -1,13 +1,23 @@
 $(function() {
+	$("#votelist .push_button").each(function() {
+        var $parent = $(this).parent();
+        var $input = $parent.find('input');
+        var $buttons = $parent.find('.push_button');
 
-	$("#votelist .push_button").bind('click touchstart', function () {
-		// remove active class from all inputs within a meal type 
-		// (go to parent, then identify all labels, remove class 'active' then all radios and deselect all)
-		$(this).parent().find('.push_button').removeClass('active');
-		$(this).parent().find('input').val($(this).data('vote'));
+        $(this).bind('click touchstart', function (ev) {
+            var was_selected = $(this).hasClass('active');
 
-		// add 'active' class and select input on current element
-		$(this).addClass('active');
+            $buttons.removeClass('active');
+
+            if (was_selected) {
+                $input.val('');
+            } else {
+                $input.val($(this).data('vote'));
+                $(this).addClass('active');
+            }
+
+            return false;
+        });
 	});
 
 	
