@@ -1,59 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="user-scalable=no,initial-scale=1.0">
 
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="viewport" content="user-scalable=no,initial-scale=1.0">
+    <title>Rate our Canteen menu items</title>
 
-
-
-<title>Rate our Canteen menu items</title>
-
-<link rel="stylesheet" href="/vote_style.css" type="text/css" media="screen" />
-
+    <link rel="stylesheet" href="/vote_style.css" type="text/css" media="screen" />
 </head>
 
 <body>
 <div class="container">
-	% if (@$menu) {	
-	<form id="canteen_voting" name="canteen_voting" method="post">
-		%= t 'input', id => 'date', name => 'date', type => 'hidden', value => $date
+    % if (@$menu) {
+        <form id="canteen_voting" name="canteen_voting" method="post">
+            %= t 'input', id => 'date', name => 'date', type => 'hidden', value => $date
 
-		<h1>How was your food today?</h1>
+            <h1>How was your food today?</h1>
 
-	    <ul id="votelist">
-	        % my @votes = ( "Good", "Neutral", "Bad" );
-	        % foreach my $i (0 .. $#{$menu}) {
-	            % my $name = $menu->[$i];
-	            <li>
-                    <input type="hidden" name="vote_<%= $i %>">
-	                <span><%= $name %></span>
-	                % foreach my $j (0 .. $#votes) {
-	                    <div class="push_button vote_<%= $j %>" data-vote="<%= $j %>">
-	                        <%= $votes[$j] %>	                        
-	                    </div>
-	                % }
-	            </li>
-	        % }
-	    </ul>
-	    
-	    % my $msg = flash 'message';
-	    <div class="button_container">
-		    <button type="submit" data-normal="Submit feedback" id="submit_button">
-		    	% if ($msg) {
-		    		%= $msg
-		    	% } else {
-		    		Submit feedback
-		    	% }
-		    </button>
-	    </div>
-	</form>	   
-	    
-	% } else {
-	    <h1>Sorry</h1>
-	    <p>Today's menu wasn't found</p>
-	% }
+            <ul id="votelist">
+                % my @votes = ( "Good", "Neutral", "Bad" );
+                % foreach my $i (0 .. $#{$menu}) {
+                    % my $name = $menu->[$i];
+                    <li>
+                        <input type="hidden" name="vote_<%= $i %>">
+                        <span><%= $name %></span>
+                        % foreach my $j (0 .. $#votes) {
+                            <div class="push_button vote_<%= $j %>" data-vote="<%= $j %>">
+                                <%= $votes[$j] %>
+                            </div>
+                        % }
+                    </li>
+                % }
+            </ul>
+
+            % my $msg = flash 'message';
+            <div class="button_container">
+                <button type="submit" data-normal="Submit feedback" id="submit_button">
+                    % if ($msg) {
+                        %= $msg
+                    % } else {
+                        Submit feedback
+                    % }
+                </button>
+            </div>
+        </form>
+    % } else {
+        <h1>Sorry</h1>
+        <p>Today's menu wasn't found</p>
+    % }
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
