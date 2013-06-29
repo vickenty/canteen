@@ -20,12 +20,23 @@ $(function() {
         });
     });
 
-    $("#submit_button").click ( function () {
-        $(this).addClass('pushed_in');
+    $("#submit_button").bind('click', function(ev) {
+        var $button = $(this);
+        $button.addClass('pushed_in');
+
+        setTimeout(function() {
+            $button.removeClass('pushed_in');
+        }, 100);
+
+        $button.text($button.data('sent'));
+
+        setTimeout(function() {
+            $button.text($button.data('normal'));
+        }, 3000);
     });
 
-    setTimeout(function() {
-        var $button = $('#submit_button');
-        $button.text($button.data('normal'));
-    }, 3000);
+    $('form').bind('vote:sent', function() {
+        $(this).find('input').val('');
+        $(this).find('.push_button').removeClass('active');
+    });
 });

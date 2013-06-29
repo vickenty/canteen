@@ -365,14 +365,20 @@ post '/vote' => sub {
     my $self = shift;
 
     my $date = $self->param_validate("date");
-    return $self->render_not_found unless ($date);
+    unless ($date) {
+        $self->respond_to(
+            json => sub { $self->render(json => { result => "bad date" }) },
+            any => sub { $self->render_not_found unless ($date); },
+        );
+    }
 
     my %votes = map { substr($_, 5) => $self->param($_) } grep /^vote_/, sort $self->param;
     save_votes($date, %votes);
 	
-	$self->flash(message => "Thank you! Your feedback has been submitted.");
-	
-    return $self->redirect_to("/vote");
+    $self->respond_to(
+        json => sub { $self->render(json => { result => "ok" }); },
+        html => sub { $self->redirect_to("/vote"); },
+    );
 };
 
 any '/refresh' => sub {

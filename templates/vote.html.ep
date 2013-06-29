@@ -34,15 +34,16 @@
                 % }
             </ul>
 
-            % my $msg = flash 'message';
             <div class="button_container">
-                <button type="submit" data-normal="Submit feedback" id="submit_button">
-                    % if ($msg) {
-                        %= $msg
-                    % } else {
-                        Submit feedback
-                    % }
+                <button type="submit" id="submit_button"
+                    data-normal="Submit feedback"
+                    data-sent="Thank you! Your feedback has been submitted."
+                >
+                    Submit feedback
                 </button>
+            </div>
+
+            <div class="debug_note">
             </div>
         </form>
     % } else {
@@ -54,5 +55,6 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="/refresh.js"></script>
 <script src="/buttons.js"></script>
+<script src="/vote.js"></script>
 
 </body>

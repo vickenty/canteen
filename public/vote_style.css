@@ -130,3 +130,16 @@ body {
 }
 
 /* end of button styling */
+
+.debug_note {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: rgba(255, 255, 255, 0);
+    -webkit-transition: color 0.2s linear;
+            transition: color 0.2s linear;
+}
+
+.debug_note_visible {
+    color: rgba(255, 255, 255, 0.3);
+}
