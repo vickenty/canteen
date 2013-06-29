@@ -1,5 +1,6 @@
 $(function() {
-    var date = document.getElementById('date').value;
+    var date = document.getElementById('date');
+    date = date && date.value;
 
     function try_refresh() {
         $.ajax({
@@ -9,6 +10,7 @@ $(function() {
                 date: date
             },
             success: function(data) {
+                console.log(data);
                 if (data && data.refresh)
                     location.reload();
                 else
@@ -21,11 +23,8 @@ $(function() {
     }
 
     function schedule() {
-        setTimeout(try_refresh, 30000);
+        setTimeout(try_refresh, 60000);
     }
 
-    if (date)
-        schedule();
-    else
-        setTimeout(function() { location.reload() }, 15000);
+    schedule();
 });

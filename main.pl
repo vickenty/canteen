@@ -379,7 +379,6 @@ any '/refresh' => sub {
     my $self = shift;
 
     my $date = $self->param_validate("date");
-    return $self->render_not_found unless ($date);
 
     my $today = today;
     my $menu = get_menu($today);
