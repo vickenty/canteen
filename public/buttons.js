@@ -36,7 +36,7 @@ $(function() {
     });
 
     $('form').bind('vote:sent', function() {
-        $(this).find('input').val('');
+        $(this).find('.vote-input').val('');
         $(this).find('.push_button').removeClass('active');
     });
 });

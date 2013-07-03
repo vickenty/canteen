@@ -23,7 +23,7 @@
                 % foreach my $i (0 .. $#{$menu}) {
                     % my $name = $menu->[$i];
                     <li>
-                        <input type="hidden" name="vote_<%= $i %>">
+                        <input type="hidden" class="vote-input" name="vote_<%= $i %>">
                         <span><%= $name %></span>
                         % foreach my $j (0 .. $#votes) {
                             <div class="push_button vote_<%= $j %>" data-vote="<%= $j %>">
