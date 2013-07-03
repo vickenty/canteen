@@ -1,0 +1,49 @@
+.vote-graph {
+    font-size: 0;
+}
+
+.vote-bar {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.vote-0 {
+    background-color: #468847;
+}
+
+.vote-1 {
+    background-color: #999999;
+}
+
+.vote-2 {
+    background-color: #B94A48;
+}
+
+.vote-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+}
+
+.vote-block {
+    display: inline-block;
+    width: 150px;
+    margin-right: 10px;
+}
+
+.vote-date {
+    text-align: right;
+    vertical-align: middle;
+    font-weight: bolder;
+}
+
+.vote-row {
+    margin-bottom: 2em;
+}

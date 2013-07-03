@@ -1,36 +1,36 @@
 % layout "back", title => "Recent votes";
 
-<div class="row">
-    <div class="span10">
-        <table class="table table-bordered table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    % foreach (0..$max_items) {
-                        <th>Item <%= $_ + 1 %></th>
-                    % }
-                </tr>
-            </thead>
-            <tbody>
-                % foreach my $day (@$votes) {
-                    <tr>
-                        <td><%= $day->{key} %></td>
-                        % my $val = $day->{value};
-                        % foreach my $item (0..$max_items) {
-                            <td>
-                            % my $v = $val->{$item};
-                            % if ($v) {
-                                <%= $v->{0}->[0] || 0 %> /
-                                <%= $v->{1}->[0] || 0 %> /
-                                <%= $v->{2}->[0] || 0 %>
-                            % } else {
-                                0 / 0 / 0
+% foreach my $date (@$votes) {
+    <div class="row vote-row">
+        <div class="span1 vote-date">
+            <%= $date->{key} %>
+        </div>
+        <div class="span11">
+            % foreach my $item (@{$date->{value}}) {
+                <div class="vote-block">
+                    <div class="vote-item">
+                        <%= $item->{key} %>
+                    </div>
+
+                    % my $votes = $item->{value};
+                    % my $total = 0;
+                    % $total += $votes->{$_}->[0] || 0 foreach (0..2);
+                    % if ($total) {
+                        <div class="vote-graph">
+                            % foreach (0..2) {
+                                % my $val = $votes->{$_}->[0] || 0;
+                                % if ($val) {
+                                    % my $width = int(100 * $val / $total);
+                                    % my $class = [ 'success', 'default', 'important' ];
+                                    <div title="<%= $val %>" class="vote-bar vote-<%= $_ %>" style="width: <%= $width %>%"><%= $val || "" %></div>
+                                % }
                             % }
-                            </td>
-                        % }
-                    </tr>
-                %}
-            </tbody>
-        </table>
+                        </div>
+                    % } else {
+                        <em>No votes</em>
+                    % }
+                </div>
+            % }
+        </div>
     </div>
-</div>
+% }

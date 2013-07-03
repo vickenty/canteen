@@ -107,11 +107,17 @@ sub collect {
 
 sub get_recent_votes {
     my $db = get_db;
-    my $st = $db->prepare("select date, position, vote, count(*) from votes where date >= date('now', '-1 month') group by date, position, vote");
+    my $st = $db->prepare(q{
+        select
+            date, name, vote, count(*) votes
+        from votes
+        join menu using (date, position)
+        where date >= date('now', '-1 month')
+        group by date, position, vote
+    });
     $st->execute;
-    my $votes = collect($st, "array", "hash", "hash");
-    my $max = $db->selectrow_array("select max(position) from menu where date >= date('now', '-1 month')");
-    return ($votes, $max);
+    my $votes = collect($st, "array", "array", "hash");
+    return $votes;
 }
 
 sub new_hash_password {
@@ -373,6 +379,7 @@ post '/vote' => sub {
     }
 
     my %votes = map { substr($_, 5) => $self->param($_) } grep /^vote_/, sort $self->param;
+
     save_votes($date, %votes);
 	
     $self->respond_to(
@@ -428,10 +435,9 @@ under sub {
 
 get '/view' => sub {
     my $self = shift;
-    my ($votes, $max_items) = get_recent_votes();
+    my $votes = get_recent_votes();
     $self->stash(
         votes => $votes,
-        max_items => $max_items
     );
     return $self->render('view');
 };
