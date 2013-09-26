@@ -13,4 +13,6 @@ if [ ! -f main.db ]; then
     cat schema.sql demo.sql | sqlite3 main.db
 fi
 
+export PERL5LIB=./lib:$PERL5LIB
+
 morbo -l http://`hostname -f`:$port main.pl
