@@ -8,6 +8,7 @@ use Exporter::Easy (
             get_menu
             save_menu
             save_votes
+            get_votes
             get_recent_votes
             get_menu_dates
         /],
@@ -62,6 +63,21 @@ sub get_recent_votes {
     $st->execute;
     my $votes = collect($st, "array", "array", "hash");
     return $votes;
+}
+
+sub get_votes {
+    my $date = shift;
+    my $db = get_db;
+    my $st = $db->prepare(q{
+        select
+            name, vote, count(*) votes
+        from votes
+        join menu using (date, position)
+        where date = ?
+        group by name, vote
+    });
+    $st->execute($date);
+    return collect($st, "array", "hash");
 }
 
 sub get_menu_dates {
