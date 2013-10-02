@@ -45,7 +45,7 @@ sub create_user {
 
     my $db = get_db;
     modify_user sub {
-        $db->do("insert into users (email, password, active, digest, created_at) values (?, ?, ?, ?, datetime('now'))",
+        $db->do("insert into users (email, password, active, mail_digest, created_at) values (?, ?, ?, ?, datetime('now'))",
             {}, $email, $hash, $active, $digest);
     };
 }
