@@ -1,5 +1,7 @@
 package Canteen::Mail::Template;
 use Mojo::Template;
+use Encode qw/encode_utf8/;
+
 use Canteen::Mail::Helpers;
 
 sub new {
@@ -13,7 +15,7 @@ sub render_file {
     $mt->prepend($self->prepend);
     my $result = $mt->render_file($file, $self->values, $self);
     die $result if ref $result;
-    return $result;
+    return encode_utf8 $result;
 }
 
 sub prepend {

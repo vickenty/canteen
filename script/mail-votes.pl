@@ -22,7 +22,15 @@ sub send_it {
             Subject => $subject,
         ],
         body => $html,
+        body_attributes => {
+            encoding => '8bit',
+            charset => 'utf8',
+        },
         text_body => $text,
+        text_body_attributes => {
+            encoding => '8bit',
+            charset => 'utf8',
+        },
     );
 
     sendmail $message;
@@ -57,6 +65,8 @@ sub main {
         my $subj = $render->render_file('templates/mail/votes.subj.ep');
         my $html = $render->render_file('templates/mail/votes.html.ep');
         my $text = $render->render_file('templates/mail/votes.text.ep');
+
+        chomp $subj;
 
         send_it $recipient->{email}, $subj, $html, $text;
     }
