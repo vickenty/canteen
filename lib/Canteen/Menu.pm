@@ -46,6 +46,7 @@ sub save_votes {
     my $db = get_db;
     my $st = $db->prepare("insert into votes (date, position, vote, user) values (?, ?, ?, ?)");
     foreach (keys %votes) {
+        next unless (defined $votes{$_} && $votes{$_} ne "");
         $st->execute($date, $_, $votes{$_}, "");
     }
 }
