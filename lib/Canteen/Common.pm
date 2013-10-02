@@ -54,7 +54,7 @@ sub validate_password {
 }
 
 sub get_db {
-    DBI->connect("dbi:SQLite:main.db", "", "", {
+    DBI->connect("dbi:SQLite:$ENV{DATABASE}", "", "", {
         RaiseError => 1,
         AutoCommit => 1,
         sqlite_unicode => 1,

@@ -14,5 +14,6 @@ if [ ! -f main.db ]; then
 fi
 
 export PERL5LIB=./lib:$PERL5LIB
+export DATABASE=main.db
 
 morbo -l http://`hostname -f`:$port main.pl
