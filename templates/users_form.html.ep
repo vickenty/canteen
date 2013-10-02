@@ -1,4 +1,4 @@
-<form class="form-horizontal" method="post">
+<form class="form-horizontal" method="post" autocomplete="off">
     %= field label => "E-mail", name => "email", type => "email", value => $user->{email}
     %= field label => "Password", name => "password", type => "password"
     %= field label => "Confirm password", name => "confirm", type => "password"
