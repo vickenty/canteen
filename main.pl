@@ -88,12 +88,14 @@ helper save_user => sub {
     my $email = $self->param('email');
     my $password = $self->param('password');
     my $active = $self->param('active');
+    my $digest = $self->param('mail_digest');
 
     unless ($self->stash('user')) {
         $self->stash(user => {
             email => $email,
             password => $password,
             active => $active,
+            mail_digest => $digest,
         });
     }
 
@@ -107,9 +109,9 @@ helper save_user => sub {
 
     eval {
         if ($uid) {
-            update_user($uid, $email, $password, $active);
+            update_user($uid, $email, $password, $active, $digest);
         } else {
-            create_user($email, $password, $active);
+            create_user($email, $password, $active, $digest);
         }
         return 1;
     } or do {
@@ -198,6 +200,21 @@ any '/signout' => sub {
 
     $self->flash(type => 'success', message => "Signed out.");
     $self->redirect_to('/signin');
+};
+
+get '/unsubscribe/:token' => [ token => qr/[a-z0-9.]+/ ] => sub {
+    my $self = shift;
+
+    my $user = check_token $self->param('token'), $ENV{EMAIL_SECRET};
+
+    if ($user) {
+        unsubscribe_user $user->{rowid};
+
+        $self->stash(email => $user->{email});
+        return $self->render('unsubscribed');
+    }
+
+    return $self->render_not_found;
 };
 
 under sub {

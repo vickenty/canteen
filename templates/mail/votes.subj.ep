@@ -1,0 +1,3 @@
+%# Only first line of output will be used.
+
+Canteen votes for <%= $date->strftime("%x") %>

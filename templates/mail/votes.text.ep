@@ -1,0 +1,15 @@
+Good day.
+
+These are the votes for the <%= $date->strftime("%x") %>.
+
+% foreach my $item (@$votes) {
+% my $v = $item->{value};
+* <%= $item->{key} %>:
+    <%= $v->{0}[0] || 0 %> good, <%= $v->{1}[0] || 0 %> neutral, <%= $v->{2}[0] || 0 %> bad.
+% }
+
+To view votes for past dates visit our web interface: http://<%= $domain %>/view
+
+You can unsubscribe here: http://<%= $domain %>/unsubscribe/<%= recipient_token %>
+
+Best regards.

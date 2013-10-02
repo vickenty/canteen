@@ -3,5 +3,6 @@
     %= field label => "Password", name => "password", type => "password"
     %= field label => "Confirm password", name => "confirm", type => "password"
     %= field label => "Active", name => "active", type => "checkbox", value => "active", checked => $user->{active}
+    %= field label => "Receive daily votes digest", name => "mail_digest", type => "checkbox", value => "spam", checked => $user->{mail_digest}
     %= field type => "submit", value => $action, class=> "btn btn-primary"
 </form>

@@ -16,6 +16,9 @@
                 % unless ($user->{active}) {
                     <span class="label">Disabled</span>
                 % }
+                % if ($user->{mail_digest}) {
+                    <span class="label label-info" title="Subscribed to votes digest email">Digest</span>
+                % }
             </td>
             <td><%= $user->{created_at} %></td>
             <td><%= $user->{last_login_at} %></td>

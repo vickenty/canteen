@@ -1,0 +1,48 @@
+<%
+    my %bar_colors = (
+        0 => 'green',
+        1 => 'gray',
+        2 => 'red',
+    );
+
+    my @bar_css = (
+        display => 'inline-block',
+        text_align => 'center',
+        color => 'white',
+    );
+%>
+
+<h2>Canteen votes</h2>
+
+<p>Good day.</p>
+
+<p>These are canteen votes for the <%= $date->strftime("%x") %>.</p>
+
+<dl>
+% foreach my $item (@$votes) {
+    % my $v = $item->{value};
+    % my $total = 0;
+    % $total += $_->[0] || 0 foreach values %$v;
+
+    <dt><%= $item->{key} %></dt>
+    <dd style="margin-bottom: 1em">
+        <%
+        foreach (0..2) {
+            my $val = $v->{$_}[0] || 0;
+            if ($val) {
+                my $width = int(200 * $val / $total);
+                my $style = css_string(@bar_css,
+                    background_color => $bar_colors{$_},
+                    width => "${width}px",
+                 );
+            %>\
+<div style="<%= $style %>"><%= $val || "" %></div>\
+            % }
+        % }
+    </dd>
+% }
+</dl>
+
+<p>To view votes for past dates visit <%= link_to('our web interface' => '/view') %>.</p>
+
+<p><%= link_to('Unsubscribe' => '/unsubscribe' => recipient_token) %> from this mailing list.</p>

@@ -1,0 +1,7 @@
+% layout 'back', title => 'Unsubscribe';
+
+<p>Hello, <%= $email %>.</p>
+
+<p>You are now unsubscribed from votes digest mailing list.</p>
+
+<p>If you ever change your mind, you can subscribe back in your profile.</p>
