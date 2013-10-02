@@ -59,6 +59,7 @@ sub get_recent_votes {
         join menu using (date, position)
         where date >= date('now', '-1 month')
         group by date, position, vote
+        order by date desc
     });
     $st->execute;
     my $votes = collect($st, "array", "array", "hash");
