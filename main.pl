@@ -37,7 +37,7 @@ helper authenticate => sub {
 
 helper url_match => sub {
     my ($self, $match) = @_;
-    $self->req->url->to_rel =~ /^$match/;
+    $self->req->url->to_string =~ /^$match/;
 };
 
 helper current_user => sub {
@@ -202,7 +202,7 @@ any '/signout' => sub {
     $self->redirect_to('/signin');
 };
 
-get '/unsubscribe/:token' => [ token => qr/[a-z0-9.]+/ ] => sub {
+get '/unsubscribe/#token' => [ token => qr/[a-z0-9.]+/ ] => sub {
     my $self = shift;
 
     my $user = check_token $self->param('token'), $ENV{EMAIL_SECRET};
@@ -326,5 +326,5 @@ post '/users/:uid' => sub {
 
 
 DateTime->DefaultLocale(setlocale(LC_ALL, "") || "C");
-app->secret($ENV{"SESSION_SECRET"} || get_token);
+app->secrets([$ENV{"SESSION_SECRET"} || get_token]);
 app->start;
